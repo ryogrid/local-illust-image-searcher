@@ -1,6 +1,7 @@
 import sys
 
-from gensim.models.lsimodel import LsiModel
+# from gensim.models.lsimodel import LsiModel
+from gensim.models.ldamulticore import LdaMulticore
 from gensim.similarities import MatrixSimilarity
 from numpy import ndarray
 from streamlit.runtime.state import SessionStateProxy
@@ -17,7 +18,7 @@ from typing import List, Tuple, Dict, Any, Optional, Protocol
 ss: SessionStateProxy = st.session_state
 search_tags: str = ''
 image_files_name_tags_arr: List[str] = []
-model: Optional[LsiModel] = None
+model: Optional[LdaMulticore] = None
 index: Optional[MatrixSimilarity] = None
 dictionary: Optional[Any] = None
 
@@ -387,7 +388,7 @@ def load_model() -> None:
         for line in f:
             image_files_name_tags_arr.append(line.strip())
 
-    model = LsiModel.load("lsi_model")
+    model = LdaMulticore.load("lsi_model")
     index = MatrixSimilarity.load("lsi_index")
     dictionary = pickle.load(open("lsi_dictionary", "rb"))
 

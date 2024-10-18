@@ -2,7 +2,7 @@ import argparse
 import sys
 
 from gensim import corpora
-from gensim.models import LsiModel
+from gensim.models.ldamulticore import LdaMulticore
 from gensim.similarities import MatrixSimilarity
 import pickle
 from typing import List, Tuple
@@ -61,14 +61,14 @@ def main(arg_str: list[str]) -> None:
     # gen LSI model with specified number of topics (dimensions)
     # ATTENTION: num_topics should be set to appropriate value!!!
     # lsi_model: LsiModel = LsiModel(corpus, id2word=dictionary, num_topics=800)
-    lsi_model: LsiModel = LsiModel(corpus, id2word=dictionary, num_topics=args.dim[0])
+    lsi_model: LdaMulticore = LdaMulticore(corpus, id2word=dictionary, num_topics=args.dim[0], workers=8)
 
     lsi_model.save("lsi_model")
 
     # make similarity index
-    index: MatrixSimilarity = MatrixSimilarity(lsi_model[corpus])
+    index: MatrixSimilarity = MatrixSimilarity(lsi_model[corpus], num_features=args.dim[0])
 
     index.save("lsi_index")
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main(sys.argv[1:])
